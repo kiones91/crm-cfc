@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("database_url")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String
+  createdAt DateTime @default(now())
+}
+// Atualização do model Student com campos da planilha aluno.csv
+model Student {
+  id                          String   @id @default(cuid())
+  name                        String
+  cpf                         String?  @unique
+  rg                          String?
+  city                        String?
+  birthDate                   DateTime?
+  cnhExpiration              DateTime? @map("DATA_VENCTO_CNH")
+  desiredCategory            String?
+  renachNumber               String?
+  enrollmentDate             DateTime?
+  medicalExamDate            DateTime?
+  psychotechnicalExamDate    DateTime?
+  whatsapp                   String?
+  cfca                       String?
+  theoryCourseStatus         String?
+  medicalExamStatus          String?
+  psychotechnicalExamStatus  String?
+  firstContact               String?
+  createdAt                  DateTime @default(now())
+}
+model Instructor {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+}
+model Vehicle {
+  id        String   @id @default(cuid())
+  plate     String   @unique
+  model     String
+  brand     String
+  year      Int
+  createdAt DateTime @default(now())
+}
+model Lesson {
+  id           String   @id @default(cuid())
+  studentId    String
+  instructorId String
+  vehicleId    String
+  date         DateTime
+  duration     Int
+  type         String // teórica ou prática
+  createdAt    DateTime @default(now())
+
+  student    Student    @relation(fields: [studentId], references: [id])
+  instructor Instructor @relation(fields: [instructorId], references: [id])
+  vehicle    Vehicle    @relation(fields: [vehicleId], references: [id])
+}
+model Exam {
+  id           String   @id @default(cuid())
+  studentId    String
+  instructorId String
+  vehicleId    String
+  date         DateTime
+  result       String
+  createdAt    DateTime @default(now())
+
+  student    Student    @relation(fields: [studentId], references: [id])
+  instructor Instructor @relation(fields: [instructorId], references: [id])
+  vehicle    Vehicle    @relation(fields: [vehicleId], references: [id])
+}
+
